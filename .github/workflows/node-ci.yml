@@ -1,55 +1,52 @@
-    name: Node.js CI
+name: Node.js CI
 
-    on:
-    push:
-        branches: [main]
-    #  pull_request:
-    #    branches: [main]
+on:
+  push:
+    branches: [main]
+  # pull_request:
+  #   branches: [main]
 
-    jobs:
-    build:
-        runs-on: ubuntu-latest
+jobs:
+  build:
+    runs-on: ubuntu-latest
 
-    #    strategy:
-    #      matrix:
-    #        node-version: [18.x]
-
-        steps:
-        - name: Checkout code
+    steps:
+      # Step 1: Checkout code
+      - name: Checkout code
         uses: actions/checkout@v4
 
-        - name: Set up Node.js
+      # Step 2: Set up Node.js environment
+      - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-            node-version: 18.x
-        - name: Change directory to node-uptime-cpu
-        run: |
-            cd node-project/node-uptime-cpu
+          node-version: 18.x
 
-        - name: Install dependencies
-        run: |
-            cd node-project/node-uptime-cpu
-            npm install
+      # Step 3: Install dependencies
+      - name: Install dependencies
+        run: npm install
+        working-directory: ${{ github.workplace }}/node-uptime-cpu
 
-        - name: Run linting
-        run: |
-            cd node-project/node-uptime-cpu
-            npx eslint server.js
+      # Step 4: Run linting
+      - name: Run linting
+        run: npx eslint server.js
+        working-directory: ${{ github.workplace }}/node-uptime-cpu
 
-        - name: Run tests
-        run: |
-            cd node-project/node-uptime-cpu
-            npm test
+      # Step 5: Run tests
+      - name: Run tests
+        run: npm test
+        working-directory: ${{ github.workplace }}/node-uptime-cpu
 
-        - name: Build artifact
+      # Step 6: Build artifact
+      - name: Build artifact
         run: |
-            cd node-project/node-uptime-cpu
-            mkdir -p dist
-            cp -r * dist/
-            tar -czf artifact.tar.gz dist
+          mkdir -p dist
+          cp -r * dist/
+          tar -czf artifact.tar.gz dist
+        working-directory: ${{ github.workplace }}/node-uptime-cpu
 
-        - name: Upload artifact
+      # Step 7: Upload artifact
+      - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
-            name: node-uptime-cpu-artifact
-            path: node-project/node-uptime-cpu/artifact.tar.gz
+          name: node-uptime-cpu-artifact
+          path: ${{ github.workplace }}/node-uptime-cpu/artifact.tar.gz
