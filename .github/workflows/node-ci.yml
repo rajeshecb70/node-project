@@ -1,0 +1,48 @@
+name: Node.js CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [16.x, 18.x]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+
+    - name: Install dependencies
+      run: |
+        npm install
+
+    - name: Run linting
+      run: |
+        npx eslint .
+
+    - name: Run tests
+      run: |
+        npm test
+
+    - name: Build artifact
+      run: |
+        mkdir -p dist
+        cp -r * dist/
+        tar -czf artifact.tar.gz dist/
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: node-uptime-cpu-artifact
+        path: artifact.tar.gz
