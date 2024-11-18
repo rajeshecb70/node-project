@@ -37,12 +37,12 @@ jobs:
       - name: Build artifact
         run: |
           tar -czf nodeproject.tar.gz ./*
-          
+
       # Step 7: Commit and push artifact to the same GitHub repo
       - name: Commit and push artifact
         run: |
-          git config --local user.email "youremail@example.com"
-          git config --local user.name "Your GitHub Username"
+          git config --local user.email "rajeshecb70@gmail.com"
+          git config --local user.name "rajeshecb70"
           git add nodeproject.tar.gz
           git commit -m "Upload artifact"
           git push
