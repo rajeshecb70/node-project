@@ -1,48 +1,55 @@
-name: Node.js CI
+    name: Node.js CI
 
-on:
-  push:
-    branches: [main]
-#  pull_request:
-#    branches: [main]
+    on:
+    push:
+        branches: [main]
+    #  pull_request:
+    #    branches: [main]
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
+    jobs:
+    build:
+        runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [18.x]
+    #    strategy:
+    #      matrix:
+    #        node-version: [18.x]
 
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+        steps:
+        - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ matrix.node-version }}
+        - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+            node-version: 18.x
+        - name: Change directory to node-uptime-cpu
+        run: |
+            cd node-project/node-uptime-cpu
 
-    - name: Install dependencies
-      run: |
-        npm install
+        - name: Install dependencies
+        run: |
+            cd node-project/node-uptime-cpu
+            npm install
 
-    - name: Run linting
-      run: |
-        npx eslint .
+        - name: Run linting
+        run: |
+            cd node-project/node-uptime-cpu
+            npx eslint server.js
 
-    - name: Run tests
-      run: |
-        npm test
+        - name: Run tests
+        run: |
+            cd node-project/node-uptime-cpu
+            npm test
 
-    - name: Build artifact
-      run: |
-        mkdir -p dist
-        cp -r * dist/
-        tar -czf artifact.tar.gz *
+        - name: Build artifact
+        run: |
+            cd node-project/node-uptime-cpu
+            mkdir -p dist
+            cp -r * dist/
+            tar -czf artifact.tar.gz dist
 
-    - name: Upload artifact
-      uses: actions/upload-artifact@v3
-      with:
-        name: node-uptime-cpu-artifact
-        path: artifact.tar.gz
+        - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+            name: node-uptime-cpu-artifact
+            path: node-project/node-uptime-cpu/artifact.tar.gz
