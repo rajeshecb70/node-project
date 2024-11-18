@@ -38,9 +38,7 @@ jobs:
       # Step 6: Build artifact
       - name: Build artifact
         run: |
-          mkdir -p dist
-          cp -r * dist/
-          tar -czf artifact.tar.gz dist
+          tar -czf nodeproject.tar.gz ./* 
         
 
       # Step 7: Upload artifact
@@ -48,4 +46,4 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: node-uptime-cpu-artifact
-          path: ${{ github.workplace }}/artifact.tar.gz
+          path: ${{ github.workplace }}/nodeproject.tar.gz
