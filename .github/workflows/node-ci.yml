@@ -48,6 +48,8 @@ jobs:
           key: ${{ secrets.SERVER_KEY }}
           source: "${{ github.workspace }}/nodeproject.tar.gz"
           target: /home/ubuntu
+          port: 22
+          debug: true  # Enable debugging to get more log
       - name: executing remote ssh commands using password
         uses: appleboy/ssh-action@v1.2.0
         with:
@@ -61,7 +63,7 @@ jobs:
             npm i
             if  pm2 list | grep -q "node-project"; then
                 echo "Restarting the running application 'nodeproject'..."
-                pm2 restart interleap-backend
+                pm2 restart nodeproject
             else
                 echo "Starting the application 'nodeproject..."
                 pm2 start server.js --name nodeproject -i max
