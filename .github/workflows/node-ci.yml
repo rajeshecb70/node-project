@@ -38,7 +38,7 @@ jobs:
         run: |
           tar -czf nodeproject.tar.gz ./*
 
-      # Step 7: Copy file via SSH key
+      # Step 7: Copy file via SSH key#
       - name: Copy file via SSH key
         uses: appleboy/scp-action@v0.1.7
         with:
