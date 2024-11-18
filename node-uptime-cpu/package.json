@@ -1,15 +1,18 @@
 {
   "name": "uptime-cpu",
   "version": "1.0.0",
-  "description": "",
+  "description": "A Node.js app to show system uptime and CPU utilization",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node server.js",
+    "lint": "eslint .",
+    "test": "jest"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "express": "^4.21.1",
     "os-utils": "^0.0.14"
   },
   "devDependencies": {
