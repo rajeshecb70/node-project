@@ -24,7 +24,7 @@ jobs:
       # Step 3: Install dependencies
       - name: Install dependencies
         run: npm install
-        working-directory: ${{ github.workplace }}/node-uptime-cpu
+        #working-directory: ${{ github.workplace }}/node-uptime-cpu
 
       # Step 4: Run linting
       - name: Run linting
