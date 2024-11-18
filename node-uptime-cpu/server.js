@@ -3,18 +3,33 @@ const osUtils = require('os-utils');
 const express = require('express');
 const app = express();
 const port = 3000;
-module.exports = app; // Export app for testing purposes
+
+// Export app for testing purposes
+module.exports = app;
+
+// Helper function to format uptime in HH:MM:SS format
+function formatUptime(seconds) {
+  const hours = Math.floor(seconds / 3600); // Get hours
+  const minutes = Math.floor((seconds % 3600) / 60); // Get minutes
+  const remainingSeconds = Math.floor(seconds % 60); // Get remaining seconds
+  return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
+}
+
+// Endpoint to get system uptime in HH:MM:SS format
 app.get('/uptime', (req, res) => {
-  const uptime = osUtils.sysUptime(); // System uptime in seconds
-  res.json({ uptime: uptime });
+  const uptimeInSeconds = osUtils.sysUptime(); // System uptime in seconds
+  const formattedUptime = formatUptime(uptimeInSeconds); // Format uptime to HH:MM:SS
+  res.json({ uptime: formattedUptime });
 });
 
+// Endpoint to get CPU usage
 app.get('/cpu', (req, res) => {
   osUtils.cpuUsage(function (v) {
-    res.json({ cpuUsage: v });
+    res.json({ cpuUsage: (v * 100).toFixed(2) }); // Convert to percentage and round to 2 decimal places
   });
 });
 
+// Start the server
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
 });
