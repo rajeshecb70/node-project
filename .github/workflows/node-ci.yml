@@ -37,6 +37,8 @@ jobs:
       - name: Build artifact
         run: |
           tar -czf nodeproject.tar.gz ./*
+      - name: debug
+        run: ssh -i ${{ secrets.KEY }} -h ${{ secrets.HOST }} -u ${{ secrets.USERNAME }} -c whoami
 
       # Step 7: Copy file via SSH key#
       - name: Copy file via SSH key
@@ -49,7 +51,7 @@ jobs:
           source: "${{ github.workspace }}/nodeproject.tar.gz"
           target: /home/ubuntu
           #port: 22
-          debug: true  # Enable debugging to get more log
+          #debug: true  # Enable debugging to get more log
       - name: executing remote ssh commands using password
         uses: appleboy/ssh-action@v1.2.0
         with:
