@@ -24,34 +24,47 @@ jobs:
       # Step 3: Install dependencies
       - name: Install dependencies
         run: npm install
-        
+
       # Step 4: Run linting
       - name: Run linting
         run: npx eslint server.js
-        
 
       # Step 5: Run tests
       - name: Run tests
         run: npm test
-        
 
       # Step 6: Build artifact
       - name: Build artifact
         run: |
-          tar -czf nodeproject.tar.gz ./* 
-        
+          tar -czf nodeproject.tar.gz ./*
 
-      # Step 7: Upload artifact
-      #- name: Upload artifact
-      #  uses: actions/upload-artifact@v3
-      #  with:
-      #    name: node-uptime-cpu-artifact
-      #    path: ${{ github.workplace }}/nodeproject.tar.gz
-
-      - name: Commit and push artifact
-        run: |
-          git config --local user.email "rajeshecb70@gmail.com"
-          git config --local user.name "rajeshecb70"
-          git add nodeproject.tar.gz
-          git commit -m "uploading artifact"
-          git push
+      # Step 7: Copy file via SSH key
+      - name: Copy file via SSH key
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SERVER_ADDRESS }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          # port: ${{ secrets.PORT }}  # Uncomment and add if necessary
+          key: ${{ secrets.SERVER_KEY }}
+          source: "${{ github.workspace }}/nodeproject.tar.gz"
+          target: /home/ubuntu
+      - name: executing remote ssh commands using password
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.SERVER_ADDRESS }}
+          username: linuxserver.io
+          password: ${{ secrets.SERVER_USERNAME }}
+          #port: ${{ secrets.PORT }}
+          script: |      
+            cd /home/ubuntu
+            tar -xvf nodeproject.tar.gz
+            npm i
+            if  pm2 list | grep -q "node-project"; then
+                echo "Restarting the running application 'nodeproject'..."
+                pm2 restart interleap-backend
+            else
+                echo "Starting the application 'nodeproject..."
+                pm2 start server.js --name nodeproject -i max
+            fi
+            pm2 save
+            
