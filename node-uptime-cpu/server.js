@@ -4,9 +4,6 @@ const express = require('express');
 const app = express();
 const port = 3000;
 
-// Export app for testing purposes
-module.exports = app;
-
 // Helper function to format uptime in HH:MM:SS format
 function formatUptime(seconds) {
   const hours = Math.floor(seconds / 3600); // Get hours
@@ -29,7 +26,11 @@ app.get('/cpu', (req, res) => {
   });
 });
 
-// Start the server
-app.listen(port, () => {
+// Start the server and export the server instance
+const server = app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
 });
+
+// Export the app and the server instance for testing purposes
+module.exports = app;
+module.exports.server = server; // Export the server instance

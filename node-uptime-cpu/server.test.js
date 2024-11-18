@@ -1,6 +1,7 @@
 // server.test.js
 const request = require('supertest');
-const app = require('./server');  // We will export app in the server.js
+const app = require('./server');  // Import the app
+const server = require('./server').server;  // Import the server instance
 
 describe('GET /uptime', () => {
   it('should return system uptime', async () => {
@@ -16,4 +17,9 @@ describe('GET /cpu', () => {
     expect(response.status).toBe(200);
     expect(response.body).toHaveProperty('cpuUsage');
   });
+});
+
+// Close the server after all tests are done
+afterAll(() => {
+  server.close(); // Properly close the server instance
 });
