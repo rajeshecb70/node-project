@@ -52,8 +52,8 @@ jobs:
         uses: appleboy/ssh-action@v1.2.0
         with:
           host: ${{ secrets.SERVER_ADDRESS }}
-          username: linuxserver.io
-          password: ${{ secrets.SERVER_USERNAME }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.SERVER_KEY }}
           #port: ${{ secrets.PORT }}
           script: |      
             cd /home/ubuntu
