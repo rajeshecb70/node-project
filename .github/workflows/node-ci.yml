@@ -48,7 +48,7 @@ jobs:
           key: ${{ secrets.KEY }}
           source: "${{ github.workspace }}/nodeproject.tar.gz"
           target: /home/ubuntu
-          port: 22
+          #port: 22
           debug: true  # Enable debugging to get more log
       - name: executing remote ssh commands using password
         uses: appleboy/ssh-action@v1.2.0
