@@ -37,38 +37,49 @@ jobs:
       - name: Build artifact
         run: |
           tar -czf nodeproject.tar.gz ./*
-      - name: debug
-        run: ssh -i ${{ secrets.KEY }} -h ${{ secrets.HOST }} -u ${{ secrets.USERNAME }} -c whoami
+          
+      # Step 7: Commit and push artifact to the same GitHub repo
+      - name: Commit and push artifact
+        run: |
+          git config --local user.email "youremail@example.com"
+          git config --local user.name "Your GitHub Username"
+          git add nodeproject.tar.gz
+          git commit -m "Upload artifact"
+          git push
 
-      # Step 7: Copy file via SSH key#
-      - name: Copy file via SSH key
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          port: ${{ secrets.PORT }}  # Uncomment and add if necessary
-          key: ${{ secrets.KEY }}
-          source: "${{ github.workspace }}/nodeproject.tar.gz"
-          target: /home/ubuntu
-          #port: 22
-          #debug: true  # Enable debugging to get more log
-      - name: executing remote ssh commands using password
-        uses: appleboy/ssh-action@v1.2.0
-        with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.KEY }}
-          port: ${{ secrets.PORT }}
-          script: |      
-            cd /home/ubuntu
-            tar -xvf nodeproject.tar.gz
-            npm i
-            if  pm2 list | grep -q "node-project"; then
-                echo "Restarting the running application 'nodeproject'..."
-                pm2 restart nodeproject
-            else
-                echo "Starting the application 'nodeproject..."
-                pm2 start server.js --name nodeproject -i max
-            fi
-            pm2 save
+          
+#      - name: debug
+#        run: ssh ${{ secrets.KEY }} -h ${{ secrets.HOST }} -u ${{ secrets.USERNAME }} -c whoami
+#
+#      # Step 7: Copy file via SSH key#
+#      - name: Copy file via SSH key
+#        uses: appleboy/scp-action@v0.1.7
+#        with:
+#          host: ${{ secrets.HOST }}
+#          username: ${{ secrets.USERNAME }}
+#          port: ${{ secrets.PORT }}  # Uncomment and add if necessary
+#          key: ${{ secrets.KEY }}
+#          source: "${{ github.workspace }}/nodeproject.tar.gz"
+#          target: /home/ubuntu
+#          #port: 22
+#          #debug: true  # Enable debugging to get more log
+#      - name: executing remote ssh commands using password
+#        uses: appleboy/ssh-action@v1.2.0
+#        with:
+#          host: ${{ secrets.HOST }}
+#          username: ${{ secrets.USERNAME }}
+#          key: ${{ secrets.KEY }}
+#          port: ${{ secrets.PORT }}
+#          script: |      
+#            cd /home/ubuntu
+#            tar -xvf nodeproject.tar.gz
+#            npm i
+#            if  pm2 list | grep -q "node-project"; then
+#                echo "Restarting the running application 'nodeproject'..."
+#                pm2 restart nodeproject
+#            else
+#                echo "Starting the application 'nodeproject..."
+#                pm2 start server.js --name nodeproject -i max
+#            fi
+#            pm2 save
             
