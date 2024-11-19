@@ -39,7 +39,7 @@ jobs:
       # Step 6: Build artifact
       - name: Build artifact
         run: |
-          tar -czf nodeproject-${VERSION}.tar.gz ./*
+          tar -cvf nodeproject-${VERSION}.tar ./*
 
       # Step 7: Debug the file existence
       - name: Debug file existence
@@ -48,8 +48,9 @@ jobs:
           ls -alh ${GITHUB_WORKSPACE}
           pwd
           echo "Checking if the tar file exists"
-          ls -alh nodeproject-${VERSION}.tar.gz
+          ls -alh nodeproject-${VERSION}.tar
 
+        
 
 #      # Step 8: Commit and push artifact to the same GitHub repo
 #      - name: Commit and push artifact
@@ -69,7 +70,7 @@ jobs:
           host: ${{ secrets.AZURE_SERVER_IP }}
           username: ${{ secrets.AZURE_SERVER_USERNAME }}
           password: ${{ secrets.AZURE_SERVER_PASSWORD }}
-          source: "${GITHUB_WORKSPACE}/nodeproject-${VERSION}.tar.gz"
+          source: "${GITHUB_WORKSPACE}/nodeproject-${VERSION}.tar"
           target: "/home/azureuser/"
 
 
