@@ -3,14 +3,12 @@ name: Node.js CI
 on:
   push:
     branches: [main]
-  # pull_request:
-  #   branches: [main]
 
 permissions:
   contents: write
 
 env:
-  VERSION: 1.1.4
+  VERSION: 1.1.5
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -41,7 +39,7 @@ jobs:
       # Step 6: Build artifact
       - name: Build artifact
         run: |
-          tar -czvf nodeproject-${VERSION}.tar.gz ./*
+          tar -czf nodeproject-${VERSION}.tar.gz .
 
       # Step 7: Debug the file existence
       - name: Debug file existence
