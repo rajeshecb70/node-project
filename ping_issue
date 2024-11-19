@@ -2,3 +2,11 @@ sudo sysctl -w net.ipv6.conf.all.disable_ipv6=1
 sudo sysctl -w net.ipv6.conf.default.disable_ipv6=1
 sudo sysctl -w net.ipv6.conf.lo.disable_ipv6=1
 
+azureuser
+Ubuntu_12345
+
+
+sudo apt-get update -y
+sudo apt-get install nodejs -y
+sudo apt-get install npm -y
+sudo npm install -g pm2
