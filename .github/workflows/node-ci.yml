@@ -51,7 +51,11 @@ jobs:
           git config --local user.name "rajeshecb70"
           git add nodeproject-${VERSION}.tar.gz
           git commit -m "Upload artifact"
+<<<<<<< HEAD
           git push 
+=======
+          git push git@github.com:rajeshecb70/node-project.git HEAD:main
+>>>>>>> 19ee53ad98147294533b71bfa479adbda22f9288
 
           
 #      - name: debug
