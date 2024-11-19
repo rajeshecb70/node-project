@@ -73,19 +73,14 @@ jobs:
           mkdir -p /home/azureuser/project
           mv nodeproject.tar.gz /home/azureuser/project
           cd /home/azureuser/project
-          # Uncomment below lines to extract and run commands on the server
-          # tar -xzf nodeproject.tar.gz
-          # cd nodeproject
-          # npm install
-          # npm start
-          # Extract the artifact
           tar -xzf nodeproject.tar.gz
+          rm -rvf nodeproject.tar.gz
           
           # Install dependencies
           npm install
           
           # Check if the PM2 process is already running
-          if pm2 list | grep -q "node-project"; then
+          if pm2 list | grep -q "nodeproject"; then
               echo "Restarting the running application 'nodeproject'..."
               pm2 restart nodeproject
           else
@@ -97,37 +92,3 @@ jobs:
           pm2 save
           
           EOF
-
-
-#      # Step 9: Upload artifact to the Azure server via SSH#
-#      - name: Upload artifact to Azure server
-#        uses: appleboy/scp-action@v0.1.7
-#        with:
-#          host: ${{ secrets.AZURE_SERVER_IP }}
-#          username: ${{ secrets.AZURE_SERVER_USERNAME }}
-#          password: ${{ secrets.AZURE_SERVER_PASSWORD }}
-#          source: "${GITHUB_WORKSPACE}/nodeproject.tar.gz"
-#          target: "/home/azureuser/"
-
-
-
-#      - name: executing remote ssh commands using password
-#        uses: appleboy/ssh-action@v1.2.0
-#        with:
-#          host: ${{ secrets.HOST }}
-#          username: ${{ secrets.USERNAME }}
-#          key: ${{ secrets.KEY }}
-#          port: ${{ secrets.PORT }}
-#          script: |      
-#            cd /home/ubuntu
-#            tar -xvf nodeproject.tar.gz
-#            npm i
-#            if  pm2 list | grep -q "node-project"; then
-#                echo "Restarting the running application 'nodeproject'..."
-#                pm2 restart nodeproject
-#            else
-#                echo "Starting the application 'nodeproject..."
-#                pm2 start server.js --name nodeproject -i max
-#            fi
-#            pm2 save
-            
