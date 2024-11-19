@@ -10,7 +10,7 @@ permissions:
   contents: write
 
 env:
-  VERSION: 1.1.3
+  VERSION: 1.1.4
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -41,17 +41,7 @@ jobs:
       # Step 6: Build artifact
       - name: Build artifact
         run: |
-          tar -czf nodeproject-${VERSION}.tar.gz ./*
-
-
-      # Step 7: Commit and push artifact to the same GitHub repo
-      - name: Commit and push artifact
-        run: |
-          git config --local user.email "rajeshecb70@gmail.com"
-          git config --local user.name "rajeshecb70"
-          git add nodeproject-${VERSION}.tar.gz
-          git commit -m "Upload artifact"
-          git push
+          tar -czvf nodeproject-${VERSION}.tar.gz ./*
 
       # Step 7: Debug the file existence
       - name: Debug file existence
@@ -63,7 +53,18 @@ jobs:
           ls -alh nodeproject-${VERSION}.tar.gz
 
 
-      # Step 8: Upload artifact to the Azure server via SSH#
+#      # Step 8: Commit and push artifact to the same GitHub repo
+#      - name: Commit and push artifact
+#        run: |
+#          git config --local user.email "rajeshecb70@gmail.com"
+#          git config --local user.name "rajeshecb70"
+#          git add nodeproject-${VERSION}.tar.gz
+#          git commit -m "Upload artifact"
+#          git push
+
+
+
+      # Step 9: Upload artifact to the Azure server via SSH#
       - name: Upload artifact to Azure server
         uses: appleboy/scp-action@v0.1.7
         with:
