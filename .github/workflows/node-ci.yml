@@ -54,7 +54,7 @@ jobs:
           git push
           
 
-      # Step 8: Upload artifact to the Azure server via SSH
+      # Step 8: Upload artifact to the Azure server via SSH#
       - name: Upload artifact to Azure server
         uses: appleboy/scp-action@v0.1.7
         with:
