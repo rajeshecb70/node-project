@@ -61,17 +61,40 @@ jobs:
 #          git commit -m "Upload artifact"
 #          git push
 
+    # Step 8: Upload artifact to the Azure server via SSH (password-based)
+       - name: SSH into Azure server using password
+         run: |
+          # Install sshpass to handle password-based SSH login
+          sudo apt-get install -y sshpass
 
+          # Debug: Check if SSH connection works without password (just for debugging)
+          echo "Checking SSH connection to the remote server"
+          sshpass -p "${{ secrets.AZURE_SERVER_PASSWORD }}" ssh -o StrictHostKeyChecking=no ${{ secrets.AZURE_SERVER_USERNAME }}@${{ secrets.AZURE_SERVER_IP }} 'echo "SSH Connection Successful"'
 
-      # Step 9: Upload artifact to the Azure server via SSH#
-      - name: Upload artifact to Azure server
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.AZURE_SERVER_IP }}
-          username: ${{ secrets.AZURE_SERVER_USERNAME }}
-          password: ${{ secrets.AZURE_SERVER_PASSWORD }}
-          source: "${GITHUB_WORKSPACE}/nodeproject-${VERSION}.tar"
-          target: "/home/azureuser/"
+          # Now, execute your commands on the remote server
+          echo "Uploading the artifact to Azure server"
+          sshpass -p "${{ secrets.AZURE_SERVER_PASSWORD }}" scp nodeproject-${VERSION}.tar.gz ${{ secrets.AZURE_SERVER_USERNAME }}@${{ secrets.AZURE_SERVER_IP }}:/home/azureuser/
+
+          # Run commands on the remote server
+          echo "Running commands on the Azure server"
+          sshpass -p "${{ secrets.AZURE_SERVER_PASSWORD }}" ssh -o StrictHostKeyChecking=no ${{ secrets.AZURE_SERVER_USERNAME }}@${{ secrets.AZURE_SERVER_IP }} << 'EOF'
+          ls
+          cd /home/azureuser
+#            tar -xzf nodeproject-${VERSION}.tar.gz
+#            cd nodeproject-${VERSION}
+#            npm install
+#            npm start
+          EOF
+
+#      # Step 9: Upload artifact to the Azure server via SSH#
+#      - name: Upload artifact to Azure server
+#        uses: appleboy/scp-action@v0.1.7
+#        with:
+#          host: ${{ secrets.AZURE_SERVER_IP }}
+#          username: ${{ secrets.AZURE_SERVER_USERNAME }}
+#          password: ${{ secrets.AZURE_SERVER_PASSWORD }}
+#          source: "${GITHUB_WORKSPACE}/nodeproject-${VERSION}.tar"
+#          target: "/home/azureuser/"
 
 
 
