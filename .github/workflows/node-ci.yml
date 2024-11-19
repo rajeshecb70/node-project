@@ -51,7 +51,7 @@ jobs:
           git config --local user.name "rajeshecb70"
           git add nodeproject-${VERSION}.tar.gz
           git commit -m "Upload artifact"
-
+          git push
           
 #      - name: debug
 #        run: ssh ${{ secrets.KEY }} -h ${{ secrets.HOST }} -u ${{ secrets.USERNAME }} -c whoami
