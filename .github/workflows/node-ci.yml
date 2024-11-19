@@ -44,14 +44,14 @@ jobs:
           tar -czf nodeproject-${VERSION}.tar.gz ./*
 
 
-#      # Step 7: Commit and push artifact to the same GitHub repo
-#      - name: Commit and push artifact
-#        run: |
-#          git config --local user.email "rajeshecb70@gmail.com"
-#          git config --local user.name "rajeshecb70"
-#          git add nodeproject-${VERSION}.tar.gz
-#          git commit -m "Upload artifact"
-#          git push
+      # Step 7: Commit and push artifact to the same GitHub repo
+      - name: Commit and push artifact
+        run: |
+          git config --local user.email "rajeshecb70@gmail.com"
+          git config --local user.name "rajeshecb70"
+          git add nodeproject-${VERSION}.tar.gz
+          git commit -m "Upload artifact"
+          git push
 
       # Step 7: Debug the file existence
       - name: Debug file existence
@@ -70,7 +70,7 @@ jobs:
           host: ${{ secrets.AZURE_SERVER_IP }}
           username: ${{ secrets.AZURE_SERVER_USERNAME }}
           password: ${{ secrets.AZURE_SERVER_PASSWORD }}
-          source: "nodeproject-${VERSION}.tar.gz"
+          source: "${GITHUB_WORKSPACE}/nodeproject-${VERSION}.tar.gz"
           target: "/home/azureuser/"
 
 
