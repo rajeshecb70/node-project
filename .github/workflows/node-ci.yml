@@ -9,6 +9,7 @@ permissions:
 
 env:
   VERSION: 1.1.5
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -39,31 +40,20 @@ jobs:
       # Step 6: Build artifact
       - name: Build artifact
         run: |
-          tar -cvf nodeproject-${VERSION}.tar ./*
+          tar -czf nodeproject-${VERSION}.tar ./*
 
-      # Step 7: Debug the file existence
+      # Step 7: Debug file existence
       - name: Debug file existence
         run: |
           echo "Listing files in the workspace"
           ls -alh ${GITHUB_WORKSPACE}
           pwd
           echo "Checking if the tar file exists"
-          ls -alh nodeproject-${VERSION}.tar
+          ls -alh nodeproject-${VERSION}.tar      
 
-        
-
-#      # Step 8: Commit and push artifact to the same GitHub repo
-#      - name: Commit and push artifact
-#        run: |
-#          git config --local user.email "rajeshecb70@gmail.com"
-#          git config --local user.name "rajeshecb70"
-#          git add nodeproject-${VERSION}.tar.gz
-#          git commit -m "Upload artifact"
-#          git push
-
-    # Step 8: Upload artifact to the Azure server via SSH (password-based)
-       - name: SSH into Azure server using password
-         run: |
+      # Step 8: Upload artifact to the Azure server via SSH (password-based)
+      - name: SSH into Azure server using password
+        run: |
           # Install sshpass to handle password-based SSH login
           sudo apt-get install -y sshpass
 
@@ -80,11 +70,13 @@ jobs:
           sshpass -p "${{ secrets.AZURE_SERVER_PASSWORD }}" ssh -o StrictHostKeyChecking=no ${{ secrets.AZURE_SERVER_USERNAME }}@${{ secrets.AZURE_SERVER_IP }} << 'EOF'
           ls
           cd /home/azureuser
-#            tar -xzf nodeproject-${VERSION}.tar.gz
-#            cd nodeproject-${VERSION}
-#            npm install
-#            npm start
+          # Uncomment below lines to extract and run commands on the server
+          # tar -xzf nodeproject-${VERSION}.tar
+          # cd nodeproject-${VERSION}
+          # npm install
+          # npm start
           EOF
+
 
 #      # Step 9: Upload artifact to the Azure server via SSH#
 #      - name: Upload artifact to Azure server
