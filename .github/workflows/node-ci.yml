@@ -76,6 +76,24 @@ jobs:
           # cd nodeproject-${VERSION}
           # npm install
           # npm start
+          # Extract the artifact
+          tar -xvf nodeproject-${VERSION}.tar.gz
+          
+          # Install dependencies
+          npm install
+          
+          # Check if the PM2 process is already running
+          if pm2 list | grep -q "node-project"; then
+              echo "Restarting the running application 'nodeproject'..."
+              pm2 restart nodeproject
+          else
+              echo "Starting the application 'nodeproject'..."
+              pm2 start server.js --name nodeproject -i max
+          fi
+          
+          # Save the PM2 process list
+          pm2 save
+          
           EOF
 
 
