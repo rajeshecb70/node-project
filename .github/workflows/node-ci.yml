@@ -6,6 +6,11 @@ on:
   # pull_request:
   #   branches: [main]
 
+permissions:
+  contents: write
+
+env:
+  VERSION: 1.0.0
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -36,16 +41,17 @@ jobs:
       # Step 6: Build artifact
       - name: Build artifact
         run: |
-          tar -czf nodeproject.tar.gz ./*
+          tar -czf nodeproject-${VERSION}.tar.gz ./*
+
 
       # Step 7: Commit and push artifact to the same GitHub repo
       - name: Commit and push artifact
         run: |
           git config --local user.email "rajeshecb70@gmail.com"
           git config --local user.name "rajeshecb70"
-          git add nodeproject.tar.gz
+          git add nodeproject-${VERSION}.tar.gz
           git commit -m "Upload artifact"
-          git push https://${{ secrets.GH_TOKEN }}@github.com/rajeshecb70/node-project.git HEAD:main
+          git push 
 
           
 #      - name: debug
