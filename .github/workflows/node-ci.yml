@@ -44,20 +44,21 @@ jobs:
           tar -czf nodeproject-${VERSION}.tar.gz ./*
 
 
-      # Step 7: Commit and push artifact to the same GitHub repo
-      - name: Commit and push artifact
-        run: |
-          git config --local user.email "rajeshecb70@gmail.com"
-          git config --local user.name "rajeshecb70"
-          git add nodeproject-${VERSION}.tar.gz
-          git commit -m "Upload artifact"
-          git push
+#      # Step 7: Commit and push artifact to the same GitHub repo
+#      - name: Commit and push artifact
+#        run: |
+#          git config --local user.email "rajeshecb70@gmail.com"
+#          git config --local user.name "rajeshecb70"
+#          git add nodeproject-${VERSION}.tar.gz
+#          git commit -m "Upload artifact"
+#          git push
 
       # Step 7: Debug the file existence
       - name: Debug file existence
         run: |
           echo "Listing files in the workspace"
           ls -alh ${GITHUB_WORKSPACE}
+          pwd
           echo "Checking if the tar file exists"
           ls -alh nodeproject-${VERSION}.tar.gz
 
