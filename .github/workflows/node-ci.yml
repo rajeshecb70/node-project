@@ -7,8 +7,8 @@ on:
 permissions:
   contents: write
 
-env:
-  VERSION: 1.1.7
+#env:
+#  VERSION: 1.1.7
 
 jobs:
   build:
@@ -40,7 +40,7 @@ jobs:
       # Step 6: Build artifact
       - name: Build artifact
         run: |
-          tar -czf nodeproject-${VERSION}.tar.gz ./*
+          tar -czf nodeproject.tar.gz ./*
 
       # Step 7: Debug file existence
       - name: Debug file existence
@@ -49,7 +49,7 @@ jobs:
           ls -alh ${GITHUB_WORKSPACE}
           pwd
           echo "Checking if the tar file exists"
-          ls -alh nodeproject-${VERSION}.tar.gz      
+          ls -alh nodeproject.tar.gz      
 
       # Step 8: Upload artifact to the Azure server via SSH (password-based)
       - name: SSH into Azure server using password
@@ -63,21 +63,23 @@ jobs:
 
           # Now, execute your commands on the remote server
           echo "Uploading the artifact to Azure server"
-          sshpass -p "${{ secrets.AZURE_SERVER_PASSWORD }}" scp nodeproject-${VERSION}.tar.gz ${{ secrets.AZURE_SERVER_USERNAME }}@${{ secrets.AZURE_SERVER_IP }}:/home/azureuser/
+          sshpass -p "${{ secrets.AZURE_SERVER_PASSWORD }}" scp nodeproject.tar.gz ${{ secrets.AZURE_SERVER_USERNAME }}@${{ secrets.AZURE_SERVER_IP }}:/home/azureuser/
 
           # Run commands on the remote server
           echo "Running commands on the Azure server"
           sshpass -p "${{ secrets.AZURE_SERVER_PASSWORD }}" ssh -o StrictHostKeyChecking=no ${{ secrets.AZURE_SERVER_USERNAME }}@${{ secrets.AZURE_SERVER_IP }} << 'EOF'
           
           cd /home/azureuser
-          ls
+          mkdir -p /home/azureuser/project
+          mv nodeproject.tar.gz /home/azureuser/project
+          cd /home/azureuser/project
           # Uncomment below lines to extract and run commands on the server
-          # tar -xzf nodeproject-${VERSION}.tar.gz
-          # cd nodeproject-${VERSION}
+          # tar -xzf nodeproject.tar.gz
+          # cd nodeproject
           # npm install
           # npm start
           # Extract the artifact
-          tar -xzf nodeproject-${VERSION}.tar.gz
+          tar -xzf nodeproject.tar.gz
           
           # Install dependencies
           npm install
@@ -104,7 +106,7 @@ jobs:
 #          host: ${{ secrets.AZURE_SERVER_IP }}
 #          username: ${{ secrets.AZURE_SERVER_USERNAME }}
 #          password: ${{ secrets.AZURE_SERVER_PASSWORD }}
-#          source: "${GITHUB_WORKSPACE}/nodeproject-${VERSION}.tar.gz"
+#          source: "${GITHUB_WORKSPACE}/nodeproject.tar.gz"
 #          target: "/home/azureuser/"
 
 
