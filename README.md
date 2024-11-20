@@ -93,6 +93,9 @@ http://<Server_IP>:3000/uptime
 ```
 #### 5. **Image snapshots**
 pipeline: ![Pipeline](snapshots/pipeline.png)
-AzureServer: ![AzureServerApp](snapshots/app_run_on_azure_server.png)
+
+Node_app on AzureServer: ![Node_app on AzureServer](snapshots/app_run_on_azure_server.png)
+
 CPU_Info: ![Pipeline](snapshots/CPU_info.png)
+
 Uptime_Info: ![Pipeline](snapshots/uptime_info.png)
