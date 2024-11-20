@@ -37,7 +37,7 @@ jobs:
       - name: Run tests
         run: npm test
 
-      # Step 6: Build artifact
+      # Step 6: Build artifact.
       - name: Build artifact
         run: |
           tar -czf nodeproject.tar.gz ./*
