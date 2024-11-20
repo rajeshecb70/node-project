@@ -29,8 +29,8 @@ Before using this project, ensure the following prerequisites are set up:
    - `make install`: Installs the required dependencies for the Node.js project.
    - `make lint`: Runs linting checks to ensure code quality.
    - `make test`: Runs unit and integration tests to ensure the application functions correctly.
-   - `make docker-build`: Build the docker image(artifact) using the Dockerfile and tag artifact .
-   - `make docker-push`: Push the docker image (artifact) for dockerHub.
+   - `make docker-build`: Build the docker image(artifact) using the Dockerfile and tag it.
+   - `make docker-push`: Push the docker image (artifact) in dockerHub.
    - `make docker-run`: Run the application locally.
 
 ### Setup and Configuration
