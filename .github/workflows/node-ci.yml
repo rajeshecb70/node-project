@@ -114,16 +114,16 @@ jobs:
           CONTAINER_NAME="nodeproject"
 
           # Get the container ID if it's running
-          CONTAINER_ID=$(docker ps -q -f name=$CONTAINER_NAME)
+          #CONTAINER_ID=$(docker ps -q -f name=$CONTAINER_NAME)
 
           # If the container is running, stop and remove it
-          if [ ! -z "$CONTAINER_ID" ]; then
-              echo "Container is already running. Stopping and removing it..."
-              docker stop $CONTAINER_ID
-              docker rm $CONTAINER_ID
-          else
-              echo "No existing container found, proceeding to start a new one."
-          fi
+          #if [ ! -z "$CONTAINER_ID" ]; then
+          #    echo "Container is already running. Stopping and removing it..."
+          #    docker stop $CONTAINER_ID
+          #    docker rm $CONTAINER_ID
+          #else
+          #    echo "No existing container found, proceeding to start a new one."
+          #fi
 
           # Run the Docker container with the latest image
           docker run -d -p 3000:3000 --name $CONTAINER_NAME rajeshecb70/nodeproject:${TAG}
