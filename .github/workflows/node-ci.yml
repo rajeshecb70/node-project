@@ -89,8 +89,8 @@ jobs:
           fi
 
           # Add user to the Docker group (azureuser in this case)
-          sudo usermod -aG docker azureuser
-          newgrp docker
+          #sudo usermod -aG docker azureuser
+          #newgrp docker
 
 
           # Restart the SSH session to apply the group changes (this is necessary to take effect immediately)
@@ -98,12 +98,14 @@ jobs:
           #sudo systemctl restart ssh
 
           # Ensure the user can access Docker without sudo
-          echo "Waiting for user to be added to Docker group"
-          sleep 5
+          #echo "Waiting for user to be added to Docker group"
+          #sleep 5
 
 
           # Pull the latest Docker image
+          echo "Pulling Docker image: rajeshecb70/nodeproject:${TAG}"
           docker pull rajeshecb70/nodeproject:${TAG}
+          
 
           # Check if the container is already running
           CONTAINER_NAME="nodeproject"
