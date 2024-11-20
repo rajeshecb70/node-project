@@ -88,6 +88,18 @@ jobs:
               echo "Docker is already installed."
           fi
 
+          # Add user to the Docker group (azureuser in this case)
+          sudo usermod -aG docker azureuser
+
+          # Restart the SSH session to apply the group changes (this is necessary to take effect immediately)
+          echo "Restarting the SSH session to apply Docker group membership"
+          sudo systemctl restart ssh
+
+          # Ensure the user can access Docker without sudo
+          echo "Waiting for user to be added to Docker group"
+          sleep 5
+
+
           # Pull the latest Docker image
           docker pull rajeshecb70/nodeproject:${TAG}
 
