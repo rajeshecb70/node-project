@@ -85,7 +85,7 @@ jobs:
               pm2 restart nodeproject
           else
               echo "Starting the application 'nodeproject'..."
-              pm2 start server.js --name nodeproject -i max
+              pm2 start server.js --name nodeproject
           fi
           
           # Save the PM2 process list
