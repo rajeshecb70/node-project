@@ -38,6 +38,6 @@ docker-push: docker-login
 	echo "$(DOCKER_USER)/$(DOCKER_IMAGE):$(TAG)"
 	docker push $(DOCKER_USER)/$(DOCKER_IMAGE):$(TAG)
 
-# Run the application
-#run:
-#	docker run -p 3000:3000 $(DOCKER_IMAGE):$(TAG)
+# Run the application locally
+docker-run:
+	docker run -d -p 3000:3000 --name rajeshecb70/nodeproject:${TAG}

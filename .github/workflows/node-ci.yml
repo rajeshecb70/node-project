@@ -37,25 +37,21 @@ jobs:
       - name: Run tests
         run: make test
 
-      # Step 6: Build artifact.
-      #- name: Build artifact & Tagging
-      #  run: make docker-build
-
-      # Step 7: Docker login to DockerHub
+      # Step 6: Docker login to DockerHub
       - name: Docker login
         run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
         env:
           DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
           DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      # Step 8: Docker build and push (with dynamic image tag)
+      # Step 7: Docker build and push (with dynamic image tag)
       - name: Docker build and push
         run: |
           TAG=${{ env.TAG }}
           docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/nodeproject:${TAG} .
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/nodeproject:${TAG}
 
-      # Step 9: SSH into Azure server and install Docker (if necessary), then restart the container with the latest image
+      # Step 8: SSH into Azure server and install Docker (if necessary), then restart the container with the latest image
       - name: SSH into Azure server using password
         run: |
           # Install sshpass to handle password-based SSH login
@@ -91,20 +87,7 @@ jobs:
               echo "Docker is already installed."
           fi
 
-          # Add user to the Docker group (azureuser in this case)
-          #sudo usermod -aG docker azureuser
-          #newgrp docker
-
-
-          # Restart the SSH session to apply the group changes (this is necessary to take effect immediately)
-          #echo "Restarting the SSH session to apply Docker group membership"
-          #sudo systemctl restart ssh
-
-          # Ensure the user can access Docker without sudo
-          #echo "Waiting for user to be added to Docker group"
-          #sleep 5
-
-
+          
           # Pull the latest Docker image
           echo "Pulling Docker image: rajeshecb70/nodeproject:${TAG}"
           docker pull rajeshecb70/nodeproject:${TAG}
