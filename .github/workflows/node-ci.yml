@@ -69,6 +69,9 @@ jobs:
           echo "Running commands on the Azure server"
           sshpass -p "${{ secrets.AZURE_SERVER_PASSWORD }}" ssh -o StrictHostKeyChecking=no ${{ secrets.AZURE_SERVER_USERNAME }}@${{ secrets.AZURE_SERVER_IP }} << 'EOF'
 
+          # Set the environment variable on the target server
+          export TAG=${{ env.TAG }}
+
           # Install Docker if it's not already installed
           if ! command -v docker &> /dev/null
           then
