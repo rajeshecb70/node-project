@@ -7,8 +7,8 @@ on:
 permissions:
   contents: write
 
-#env:
-#  VERSION: 1.1.7
+env:
+  TAG: 2.1.0
 
 jobs:
   build:
@@ -38,61 +38,75 @@ jobs:
         run: make test
 
       # Step 6: Build artifact.
-      - name: Build artifact
-        run: make build
-      # Step 7: Run the app
-      - name: Run app
-        run: make run
-          
+      #- name: Build artifact & Tagging
+      #  run: make docker-build
 
-    #  # Step 7: Debug file existence
-    #  - name: Debug file existence
-    #    run: |
-    #      echo "Listing files in the workspace"
-    #      ls -alh ${GITHUB_WORKSPACE}
-    #      pwd
-    #      echo "Checking if the tar file exists"
-    #      ls -alh nodeproject.tar.gz      
-#
-    #  # Step 8: Upload artifact to the Azure server via SSH (password-based)
-    #  - name: SSH into Azure server using password
-    #    run: |
-    #      # Install sshpass to handle password-based SSH login
-    #      sudo apt-get install -y sshpass
-#
-    #      # Debug: Check if SSH connection works without password (just for debugging)
-    #      echo "Checking SSH connection to the remote server"
-    #      sshpass -p "${{ secrets.AZURE_SERVER_PASSWORD }}" ssh -o StrictHostKeyChecking=no ${{ secrets.AZURE_SERVER_USERNAME }}@${{ secrets.AZURE_SERVER_IP }} 'echo "SSH Connection Successful"'
-#
-    #      # Now, execute your commands on the remote server
-    #      echo "Uploading the artifact to Azure server"
-    #      sshpass -p "${{ secrets.AZURE_SERVER_PASSWORD }}" scp nodeproject.tar.gz ${{ secrets.AZURE_SERVER_USERNAME }}@${{ secrets.AZURE_SERVER_IP }}:/home/azureuser/
-#
-    #      # Run commands on the remote server
-    #      echo "Running commands on the Azure server"
-    #      sshpass -p "${{ secrets.AZURE_SERVER_PASSWORD }}" ssh -o StrictHostKeyChecking=no ${{ secrets.AZURE_SERVER_USERNAME }}@${{ secrets.AZURE_SERVER_IP }} << 'EOF'
-    #      
-    #      cd /home/azureuser
-    #      mkdir -p /home/azureuser/project
-    #      mv nodeproject.tar.gz /home/azureuser/project
-    #      cd /home/azureuser/project
-    #      tar -xzf nodeproject.tar.gz
-    #      rm -rvf nodeproject.tar.gz
-    #      
-    #      # Install dependencies
-    #      npm install
-    #      
-    #      # Check if the PM2 process is already running
-    #      if pm2 list | grep -q "nodeproject"; then
-    #          echo "Restarting the running application 'nodeproject'..."
-    #          pm2 restart nodeproject
-    #      else
-    #          echo "Starting the application 'nodeproject'..."
-    #          pm2 start server.js --name nodeproject -i max
-    #      fi
-    #      
-    #      # Save the PM2 process list
-    #      pm2 save
-    #      
-    #      EOF
-#
+      # Step 7: Docker login to DockerHub
+      - name: Docker login
+        run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # Step 8: Docker build and push (with dynamic image tag)
+      - name: Docker build and push
+        run: |
+          TAG=${{ env.TAG }}
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/nodeproject:${TAG} .
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/nodeproject:${TAG}
+
+      # Step 9: SSH into Azure server and install Docker (if necessary), then restart the container with the latest image
+      - name: SSH into Azure server using password
+        run: |
+          # Install sshpass to handle password-based SSH login
+          sudo apt-get install -y sshpass
+
+          # Check SSH connection to the remote server
+          echo "Checking SSH connection to the remote server"
+          sshpass -p "${{ secrets.AZURE_SERVER_PASSWORD }}" ssh -o StrictHostKeyChecking=no ${{ secrets.AZURE_SERVER_USERNAME }}@${{ secrets.AZURE_SERVER_IP }} 'echo "SSH Connection Successful"'
+
+          # Run commands on the remote server
+          echo "Running commands on the Azure server"
+          sshpass -p "${{ secrets.AZURE_SERVER_PASSWORD }}" ssh -o StrictHostKeyChecking=no ${{ secrets.AZURE_SERVER_USERNAME }}@${{ secrets.AZURE_SERVER_IP }} << 'EOF'
+
+          # Install Docker if it's not already installed
+          if ! command -v docker &> /dev/null
+          then
+              echo "Docker not found, installing Docker..."
+              sudo apt-get update
+              sudo apt-get install -y \
+                  apt-transport-https \
+                  ca-certificates \
+                  curl \
+                  gnupg-agent \
+                  software-properties-common
+              curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+              sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+              sudo apt-get update
+              sudo apt-get install -y docker-ce docker-ce-cli containerd.io
+          else
+              echo "Docker is already installed."
+          fi
+
+          # Pull the latest Docker image
+          docker pull rajeshecb70/nodeproject:${TAG}
+
+          # Check if the container is already running
+          CONTAINER_NAME="nodeproject"
+
+          # Get the container ID if it's running
+          CONTAINER_ID=$(docker ps -q -f name=$CONTAINER_NAME)
+
+          # If the container is running, stop and remove it
+          if [ ! -z "$CONTAINER_ID" ]; then
+              echo "Container is already running. Stopping and removing it..."
+              docker stop $CONTAINER_ID
+              docker rm $CONTAINER_ID
+          else
+              echo "No existing container found, proceeding to start a new one."
+          fi
+
+          # Run the Docker container with the latest image
+          docker run -d -p 3000:3000 --name $CONTAINER_NAME rajeshecb70/nodeproject:${TAG}
+
+          EOF
