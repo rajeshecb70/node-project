@@ -19,4 +19,4 @@ build:
 
 # Run the application
 run:
-	docker run -p 3000:3000 nodeproject
+	docker run -p 3000:3000 $(IMAGE_NAME):$(TAG)
