@@ -8,7 +8,7 @@ permissions:
   contents: write
 
 env:
-  TAG: 2.1.0
+  TAG: 2.2.0
 
 jobs:
   build:

@@ -6,15 +6,16 @@ WORKDIR /nodeproject
 # Install any necessary dependencies
 RUN apk add --no-cache bash
 
-RUN npm install -g npm
+# RUN npm install -g npm
 # Install PM2 globally
-RUN npm install -g pm2
+RUN npm install pm2 -g
+
 
 # Copy package.json and package-lock.json
-COPY package*.json ./
+COPY package.json package-lock.json ./
 
 # Install app dependencies
-RUN npm install
+RUN npm install -i
 
 # Copy the rest of the application code into the container
 COPY server.* eslint.config.mjs ./
@@ -23,4 +24,4 @@ COPY server.* eslint.config.mjs ./
 EXPOSE 3000
 
 # Command to run your app using PM2
-CMD ["pm2", "start", "server.js", "--name","nodeproject"]
+CMD ["pm2", "start", "server.js", "--name", "nodeproject", "--no-daemon"]
