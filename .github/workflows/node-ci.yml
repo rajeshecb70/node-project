@@ -27,68 +27,72 @@ jobs:
 
       # Step 3: Install dependencies
       - name: Install dependencies
-        run: npm install
+        run: make install
 
       # Step 4: Run linting
       - name: Run linting
-        run: npx eslint server.js
+        run: make lint
 
       # Step 5: Run tests
       - name: Run tests
-        run: npm test
+        run: make test
 
       # Step 6: Build artifact.
       - name: Build artifact
-        run: |
-          tar -czf nodeproject.tar.gz ./*
-
-      # Step 7: Debug file existence
-      - name: Debug file existence
-        run: |
-          echo "Listing files in the workspace"
-          ls -alh ${GITHUB_WORKSPACE}
-          pwd
-          echo "Checking if the tar file exists"
-          ls -alh nodeproject.tar.gz      
-
-      # Step 8: Upload artifact to the Azure server via SSH (password-based)
-      - name: SSH into Azure server using password
-        run: |
-          # Install sshpass to handle password-based SSH login
-          sudo apt-get install -y sshpass
-
-          # Debug: Check if SSH connection works without password (just for debugging)
-          echo "Checking SSH connection to the remote server"
-          sshpass -p "${{ secrets.AZURE_SERVER_PASSWORD }}" ssh -o StrictHostKeyChecking=no ${{ secrets.AZURE_SERVER_USERNAME }}@${{ secrets.AZURE_SERVER_IP }} 'echo "SSH Connection Successful"'
-
-          # Now, execute your commands on the remote server
-          echo "Uploading the artifact to Azure server"
-          sshpass -p "${{ secrets.AZURE_SERVER_PASSWORD }}" scp nodeproject.tar.gz ${{ secrets.AZURE_SERVER_USERNAME }}@${{ secrets.AZURE_SERVER_IP }}:/home/azureuser/
-
-          # Run commands on the remote server
-          echo "Running commands on the Azure server"
-          sshpass -p "${{ secrets.AZURE_SERVER_PASSWORD }}" ssh -o StrictHostKeyChecking=no ${{ secrets.AZURE_SERVER_USERNAME }}@${{ secrets.AZURE_SERVER_IP }} << 'EOF'
+        run: make build
+      # Step 7: Run the app
+      - name: Run app
+        run: make run
           
-          cd /home/azureuser
-          mkdir -p /home/azureuser/project
-          mv nodeproject.tar.gz /home/azureuser/project
-          cd /home/azureuser/project
-          tar -xzf nodeproject.tar.gz
-          rm -rvf nodeproject.tar.gz
-          
-          # Install dependencies
-          npm install
-          
-          # Check if the PM2 process is already running
-          if pm2 list | grep -q "nodeproject"; then
-              echo "Restarting the running application 'nodeproject'..."
-              pm2 restart nodeproject
-          else
-              echo "Starting the application 'nodeproject'..."
-              pm2 start server.js --name nodeproject -i max
-          fi
-          
-          # Save the PM2 process list
-          pm2 save
-          
-          EOF
+
+    #  # Step 7: Debug file existence
+    #  - name: Debug file existence
+    #    run: |
+    #      echo "Listing files in the workspace"
+    #      ls -alh ${GITHUB_WORKSPACE}
+    #      pwd
+    #      echo "Checking if the tar file exists"
+    #      ls -alh nodeproject.tar.gz      
+#
+    #  # Step 8: Upload artifact to the Azure server via SSH (password-based)
+    #  - name: SSH into Azure server using password
+    #    run: |
+    #      # Install sshpass to handle password-based SSH login
+    #      sudo apt-get install -y sshpass
+#
+    #      # Debug: Check if SSH connection works without password (just for debugging)
+    #      echo "Checking SSH connection to the remote server"
+    #      sshpass -p "${{ secrets.AZURE_SERVER_PASSWORD }}" ssh -o StrictHostKeyChecking=no ${{ secrets.AZURE_SERVER_USERNAME }}@${{ secrets.AZURE_SERVER_IP }} 'echo "SSH Connection Successful"'
+#
+    #      # Now, execute your commands on the remote server
+    #      echo "Uploading the artifact to Azure server"
+    #      sshpass -p "${{ secrets.AZURE_SERVER_PASSWORD }}" scp nodeproject.tar.gz ${{ secrets.AZURE_SERVER_USERNAME }}@${{ secrets.AZURE_SERVER_IP }}:/home/azureuser/
+#
+    #      # Run commands on the remote server
+    #      echo "Running commands on the Azure server"
+    #      sshpass -p "${{ secrets.AZURE_SERVER_PASSWORD }}" ssh -o StrictHostKeyChecking=no ${{ secrets.AZURE_SERVER_USERNAME }}@${{ secrets.AZURE_SERVER_IP }} << 'EOF'
+    #      
+    #      cd /home/azureuser
+    #      mkdir -p /home/azureuser/project
+    #      mv nodeproject.tar.gz /home/azureuser/project
+    #      cd /home/azureuser/project
+    #      tar -xzf nodeproject.tar.gz
+    #      rm -rvf nodeproject.tar.gz
+    #      
+    #      # Install dependencies
+    #      npm install
+    #      
+    #      # Check if the PM2 process is already running
+    #      if pm2 list | grep -q "nodeproject"; then
+    #          echo "Restarting the running application 'nodeproject'..."
+    #          pm2 restart nodeproject
+    #      else
+    #          echo "Starting the application 'nodeproject'..."
+    #          pm2 start server.js --name nodeproject -i max
+    #      fi
+    #      
+    #      # Save the PM2 process list
+    #      pm2 save
+    #      
+    #      EOF
+#
