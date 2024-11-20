@@ -29,6 +29,9 @@ Before using this project, ensure the following prerequisites are set up:
    - `make install`: Installs the required dependencies for the Node.js project.
    - `make lint`: Runs linting checks to ensure code quality.
    - `make test`: Runs unit and integration tests to ensure the application functions correctly.
+   - `make docker-build`: Build the docker image(artifact) using the Dockerfile and tag artifact .
+   - `make docker-push`: Push the docker image (artifact) for dockerHub.
+   - `make docker-run`: Run the application locally.
 
 ### Setup and Configuration
 
@@ -67,16 +70,15 @@ Before using this project, ensure the following prerequisites are set up:
       make install
       ```
 
-   3. Build docker image and run the application:
-      Create the docker image:
+   3. Build docker image:
       ```bash
       make docker-build
       ```
-      Run the application using the docker images:
+   4. Run the application using the docker images:
       ```bash
       make docker-run
       ```
-      The application will be available at `http://localhost:3000/uptime` `http://localhost:3000/uptime`
+      The application will be available at `http://localhost:3000/uptime` `http://localhost:3000/cpu`
 
 #### 4. **Updating the Docker Image**
    To update the Docker image version, modify the `TAG` environment variable in the `.github/workflows/nodejs-ci.yml` file. For example, change the `TAG` value from `2.2.0` to a new version like `2.3.0`:
@@ -96,6 +98,8 @@ pipeline: ![Pipeline](snapshots/pipeline.png)
 
 Node_app on AzureServer: ![Node_app on AzureServer](snapshots/app_run_on_azure_server.png)
 
-CPU_Info: ![Pipeline](snapshots/CPU_info.png)
+CPU_Info: 
+![Pipeline](snapshots/CPU_info.png)
 
-Uptime_Info: ![Pipeline](snapshots/uptime_info.png)
+Uptime_Info: 
+![Pipeline](snapshots/uptime_info.png)

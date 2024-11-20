@@ -18,11 +18,7 @@ lint:
 test:
 	npm test
 
-# Built artifact
-docker-build:
-	@echo "Building Docker image"
-	docker build -t $(DOCKER_IMAGE):$(TAG) .
-
+# Built artifact & Tag
 docker-build:
 	@echo "Building Docker image"
 	docker build -t $(DOCKER_IMAGE):$(TAG) .
