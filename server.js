@@ -17,7 +17,7 @@ app.get('/uptime', (req, res) => {
   const uptimeInSeconds = osUtils.sysUptime(); // System uptime in seconds
   const formattedUptime = formatUptime(uptimeInSeconds); // Format uptime to HH:MM:SS
   res.json({ uptime: formattedUptime });
-});
+}); 
 
 // Endpoint to get CPU usage
 app.get('/cpu', (req, res) => {
