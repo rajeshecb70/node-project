@@ -98,8 +98,6 @@ pipeline: ![Pipeline](snapshots/pipeline.png)
 
 Node_app on AzureServer: ![Node_app on AzureServer](snapshots/app_run_on_azure_server.png)
 
-CPU_Info: 
-![Pipeline](snapshots/CPU_info.png)
+CPU_Info: ![CPU_Info](snapshots/CPU_info.png)
 
-Uptime_Info: 
-![Pipeline](snapshots/uptime_info.png)
+Uptime_Info: ![Uptime_Info](snapshots/uptime_info.png)
